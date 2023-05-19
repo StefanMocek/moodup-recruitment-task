@@ -1,16 +1,11 @@
 import {AppModule} from "./module";
 import express from "express";
-
-interface JwtPayload {
-  email: string,
-  userId: string
-};
+import {JwtPayload} from './utils/globals';
 
 declare global {
   namespace Express {
     interface Request {
       currentUser?: JwtPayload;
-      uploaderError?: Error
     }
   }
 };
