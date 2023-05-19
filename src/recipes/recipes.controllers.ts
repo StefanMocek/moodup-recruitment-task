@@ -29,6 +29,29 @@ class RecipesController {
     })
     res.status(201).send(recipe)
   }
+
+  public async updateRecipe(req: Request, res: Response, next: NextFunction) {
+    const {name, ingredients, preparing, time} = req.body;
+    const {id: recipeId} = req.params;
+    console.log(req.currentUser!.userId);
+    console.log(typeof (req.currentUser!.userId));
+  
+    const result = await recipesService.updateRecipe({
+      userId: req.currentUser!.userId,
+      userRole: req.currentUser!.role,
+      recipeId,
+      name, 
+      ingredients, 
+      preparing, 
+      time
+    })
+
+    if(result instanceof CustomError ) {
+      return next(result)
+    };
+
+    res.status(200).send(result)
+  }
 };
 
 export default new RecipesController()

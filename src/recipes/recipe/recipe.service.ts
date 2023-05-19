@@ -1,5 +1,5 @@
 import {RecipeModel, Recipe} from './recipe.model';
-import {CreateRecipeDto} from '../dtos/recipes.dto';
+import {CreateRecipeDto, UpdateRecipeDto} from '../dtos/recipes.dto';
 
 export class RecipeService {
   constructor(public recipeModel: RecipeModel) { }
@@ -12,7 +12,7 @@ export class RecipeService {
     return await this.recipeModel.find({});
   }
 
-  async create (createRecipeDto: CreateRecipeDto) {
+  async create(createRecipeDto: CreateRecipeDto) {
     const recipe = new this.recipeModel({
       userId: createRecipeDto.userId,
       name: createRecipeDto.name,
@@ -22,6 +22,21 @@ export class RecipeService {
     })
 
     return await recipe.save();
+  }
+
+  async updateRecipe(updateRecipeDto: UpdateRecipeDto) {
+    return await this.recipeModel.findOneAndUpdate(
+      {_id: updateRecipeDto.recipeId},
+      {
+        $set: {
+          userId: updateRecipeDto.userId,
+          name: updateRecipeDto.name,
+          ingredients: updateRecipeDto.ingredients,
+          preparing: updateRecipeDto.preparing,
+          time: updateRecipeDto.time
+        }
+      },
+      {new: true})
   }
 };
 
