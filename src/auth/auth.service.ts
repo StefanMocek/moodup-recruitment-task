@@ -15,7 +15,7 @@ export class AuthService {
     };
     const newUser = await this.userService.create(createUserDto);
 
-    const jwt = this.authenticationService.generateJwt({email: createUserDto.email, userId: newUser._id}, process.env.JWT_KEY!)
+    const jwt = this.authenticationService.generateJwt({email: createUserDto.email, userId: newUser._id, role: newUser.role}, process.env.JWT_KEY!)
     return {jwt};
   };
 
@@ -31,7 +31,7 @@ export class AuthService {
       return {message: 'Wrong credentials'}
     };
 
-    const jwt = this.authenticationService.generateJwt({email: user.email, userId: user._id}, process.env.JWT_KEY!)
+    const jwt = this.authenticationService.generateJwt({email: user.email, userId: user._id, role: user.role}, process.env.JWT_KEY!)
     return {jwt};
   }
 };
