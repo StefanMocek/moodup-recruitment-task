@@ -10,9 +10,10 @@ declare global {
   }
 };
 
-const boostrap = () => {
-  const app = new AppModule(express());
+const app = new AppModule(express());
+export default app.app;
 
+const boostrap = () => {
   app.start();
 };
 
