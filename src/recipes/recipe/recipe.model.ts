@@ -10,7 +10,7 @@ interface RecipeDoc extends mongoose.Document {
   image?: string
 }
 
-interface RecipeModel extends mongoose.Model<RecipeDoc> {}
+export interface RecipeModel extends mongoose.Model<RecipeDoc> {}
 
 const schema = new mongoose.Schema<RecipeDoc, RecipeModel>({
   user: {
