@@ -16,6 +16,19 @@ class RecipesController {
     };
     res.status(200).send(recipe)
   }
+
+  public async addRecipe(req: Request, res: Response, next: NextFunction) {
+    const {name, ingredients, preparing, time} = req.body;
+
+    const recipe = await recipesService.addRecipe({
+      userId: req.currentUser!.userId, 
+      name, 
+      ingredients, 
+      preparing, 
+      time
+    })
+    res.status(201).send(recipe)
+  }
 };
 
 export default new RecipesController()

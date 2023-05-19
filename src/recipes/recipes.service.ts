@@ -1,4 +1,5 @@
 import {RecipeService, recipeService} from "./recipe/recipe.service";
+import {CreateRecipeDto} from './dtos/recipes.dto';
 import {BadRequestError} from '../utils/errors';
 
 export class RecipesService {
@@ -16,6 +17,10 @@ export class RecipesService {
       return new BadRequestError('Recipe not found!');
     }
     return recipe
+  }
+
+  async addRecipe (createRecipeDto: CreateRecipeDto) {
+    return await this.recipeService.create(createRecipeDto)
   }
 };
 

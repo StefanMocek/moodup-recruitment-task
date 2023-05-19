@@ -2,18 +2,18 @@ import mongoose from 'mongoose';
 import {UserDoc} from '../../auth/user/user.model';
 
 interface RecipeDoc extends mongoose.Document {
-  user: UserDoc | string,
+  userId: UserDoc | string,
   name: string,
-  ingredients: { [key: string]: string}[],
-  preparing: { [key: number]: string}[],
+  ingredients: Record<string, string>[],
+  preparing: string[],
   time: string;
-  image?: string
+  imageUrl?: string
 }
 
 export interface RecipeModel extends mongoose.Model<RecipeDoc> {}
 
 const schema = new mongoose.Schema<RecipeDoc, RecipeModel>({
-  user: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
@@ -25,38 +25,26 @@ const schema = new mongoose.Schema<RecipeDoc, RecipeModel>({
   ingredients: {
     type: [
       {
-        key: {
-          type: String,
-          required: true,
-        },
-        value: {
-          type: String,
-          required: true,
+        type: mongoose.Schema.Types.Mixed,
+        validate: {
+          validator: function (value: any) {
+            return Array.isArray(value) && value.every((obj) => typeof obj === 'object');
+          },
+          message: 'Ingredients must be an array of objects',
         },
       },
     ],
     required: true,
   },
   preparing: {
-    type: [
-      {
-        key: {
-          type: Number,
-          required: true,
-        },
-        value: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
+    type: [String],
     required: true,
   },
   time: {
     type: String,
     required: true,
   },
-  image: {
+  imageUrl: {
     type: String,
   },
 });
