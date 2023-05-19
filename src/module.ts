@@ -6,6 +6,9 @@ import cors from 'cors';
 import cookieSession from 'cookie-session';
 import mongoose from 'mongoose';
 
+import {errorHandler, currentUser} from './utils/middlewares';
+import {authRouters} from './auth/auth.routers';
+
 const PORT = process.env.PORT || 3000
 
 export class AppModule {
@@ -38,6 +41,10 @@ export class AppModule {
     } catch (error) {
       throw new Error('database connection error')
     };
+
+    this.app.use(currentUser(process.env.JWT_KEY));
+    this.app.use(authRouters);
+    this.app.use(errorHandler);
 
     this.app.listen(PORT, () => {
       console.log(`Server is listening on port ${PORT}`);
