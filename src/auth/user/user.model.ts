@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import {AuthenticationService} from '../../utils/services/authentication.service';
 
-interface UserDoc extends mongoose.Document {
+export interface UserDoc extends mongoose.Document {
   email: string,
   password: string,
   role: string

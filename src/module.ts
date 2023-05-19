@@ -6,8 +6,9 @@ import cors from 'cors';
 import cookieSession from 'cookie-session';
 import mongoose from 'mongoose';
 
-import {errorHandler, currentUser} from './utils/middlewares';
+import {errorHandler, currentUser, handleNotFound} from './utils/middlewares';
 import {authRouters} from './auth/auth.routers';
+import {recipesRouters} from './recipes/recipes.routers';
 
 const PORT = process.env.PORT || 3000
 
@@ -44,6 +45,8 @@ export class AppModule {
 
     this.app.use(currentUser(process.env.JWT_KEY));
     this.app.use(authRouters);
+    this.app.use(recipesRouters);
+    this.app.use(handleNotFound);
     this.app.use(errorHandler);
 
     this.app.listen(PORT, () => {
