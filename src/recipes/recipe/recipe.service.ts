@@ -1,5 +1,5 @@
 import {RecipeModel, Recipe} from './recipe.model';
-import {CreateRecipeDto, UpdateRecipeDto} from '../dtos/recipes.dto';
+import {CreateRecipeDto, UpdateRecipeDto, DeleteRecipeDto} from '../dtos/recipes.dto';
 
 export class RecipeService {
   constructor(public recipeModel: RecipeModel) { }
@@ -24,7 +24,7 @@ export class RecipeService {
     return await recipe.save();
   }
 
-  async updateRecipe(updateRecipeDto: UpdateRecipeDto) {
+  async update(updateRecipeDto: UpdateRecipeDto) {
     return await this.recipeModel.findOneAndUpdate(
       {_id: updateRecipeDto.recipeId},
       {
@@ -37,6 +37,10 @@ export class RecipeService {
         }
       },
       {new: true})
+  }
+
+  async delete(deleteRecipeDto: DeleteRecipeDto) {
+    return await this.recipeModel.findOneAndRemove({ _id: deleteRecipeDto.recipeId })
   }
 };
 

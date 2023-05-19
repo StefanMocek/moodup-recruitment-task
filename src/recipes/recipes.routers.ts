@@ -9,6 +9,7 @@ const router = Router();
 router.get('/recipes', requireAuth, RecipesController.getAllRecipes);
 router.post('/recipes/add', recipeValidation, validateRequest, requireAuth, RecipesController.addRecipe);
 router.post('/recipes/update/:id', recipeValidation, validateRequest, requireAuth, RecipesController.updateRecipe)
+router.delete('/recipes/delete/:id', requireAuth, RecipesController.deleteRecipe)
 router.get('/recipes/:id', requireAuth, RecipesController.getSingleRecipe);
 
 export {router as recipesRouters};

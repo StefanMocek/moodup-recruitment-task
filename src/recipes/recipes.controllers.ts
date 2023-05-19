@@ -21,10 +21,10 @@ class RecipesController {
     const {name, ingredients, preparing, time} = req.body;
 
     const recipe = await recipesService.addRecipe({
-      userId: req.currentUser!.userId, 
-      name, 
-      ingredients, 
-      preparing, 
+      userId: req.currentUser!.userId,
+      name,
+      ingredients,
+      preparing,
       time
     })
     res.status(201).send(recipe)
@@ -35,23 +35,36 @@ class RecipesController {
     const {id: recipeId} = req.params;
     console.log(req.currentUser!.userId);
     console.log(typeof (req.currentUser!.userId));
-  
+
     const result = await recipesService.updateRecipe({
       userId: req.currentUser!.userId,
       userRole: req.currentUser!.role,
       recipeId,
-      name, 
-      ingredients, 
-      preparing, 
+      name,
+      ingredients,
+      preparing,
       time
     })
 
-    if(result instanceof CustomError ) {
+    if (result instanceof CustomError) {
       return next(result)
     };
 
     res.status(200).send(result)
   }
-};
+
+  public async deleteRecipe(req: Request, res: Response, next: NextFunction) {
+    const {id: recipeId} = req.params;
+    const result = await recipesService.deleteRecipe({
+      recipeId,
+      userRole: req.currentUser!.role, 
+      userId: req.currentUser!.userId})
+    if (result instanceof CustomError) {
+      return next(result)
+    };
+
+    res.status(200).send(true)
+  };
+}; 
 
 export default new RecipesController()

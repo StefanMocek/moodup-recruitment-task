@@ -1,5 +1,5 @@
 import {RecipeService, recipeService} from "./recipe/recipe.service";
-import {CreateRecipeDto, UpdateRecipeDto} from './dtos/recipes.dto';
+import {CreateRecipeDto, UpdateRecipeDto, DeleteRecipeDto} from './dtos/recipes.dto';
 import {BadRequestError, NotAuthorizedError} from '../utils/errors';
 
 export class RecipesService {
@@ -32,7 +32,19 @@ export class RecipesService {
       return new NotAuthorizedError()
     }
 
-    return await this.recipeService.updateRecipe(updateRecipeDto);
+    return await this.recipeService.update(updateRecipeDto);
+  }
+
+  async deleteRecipe(deleteRecipeDto: DeleteRecipeDto) {
+    const recipe = await this.recipeService.getOneById(deleteRecipeDto.recipeId);
+    if (!recipe) {
+      return new BadRequestError('Recipe not found!')
+    }
+    if (recipe.userId.toString() !== deleteRecipeDto.userId && deleteRecipeDto.userRole !== 'admin') {
+      return new NotAuthorizedError()
+    }
+
+    return await this.recipeService.delete(deleteRecipeDto);
   }
 };
 
