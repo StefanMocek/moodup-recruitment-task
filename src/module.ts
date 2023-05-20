@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import express, {Application} from 'express';
+import express, {Application, NextFunction, Request, Response} from 'express';
 import cors from 'cors';
 import cookieSession from 'cookie-session';
 import mongoose from 'mongoose';
@@ -35,6 +35,9 @@ export class AppModule {
     };
     if (!process.env.JWT_KEY) {
       throw new Error('JWT_KEY is require')
+    };
+    if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY || !process.env.AWS_REGION){
+      throw new Error('Your AWS access keys are required to run this app')
     };
 
     try {

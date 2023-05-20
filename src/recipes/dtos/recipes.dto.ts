@@ -1,3 +1,5 @@
+import { Request } from 'express';
+
 export interface CreateRecipeDto {
   userId: string,
   name: string,
@@ -21,3 +23,15 @@ export interface DeleteRecipeDto {
   userRole: string,
   recipeId: string
 };
+
+export interface AddImageDto {
+  userId: string,
+  recipeId: string,
+  userRole: string,
+  image: Request['file']
+}
+
+export interface AddImageToRecipeDto {
+  recipeId: string;
+  imageUrl: string;
+}

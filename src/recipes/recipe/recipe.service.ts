@@ -1,5 +1,5 @@
 import {RecipeModel, Recipe} from './recipe.model';
-import {CreateRecipeDto, UpdateRecipeDto, DeleteRecipeDto} from '../dtos/recipes.dto';
+import {CreateRecipeDto, UpdateRecipeDto, DeleteRecipeDto, AddImageToRecipeDto} from '../dtos/recipes.dto';
 
 export class RecipeService {
   constructor(public recipeModel: RecipeModel) { }
@@ -41,6 +41,17 @@ export class RecipeService {
 
   async delete(deleteRecipeDto: DeleteRecipeDto) {
     return await this.recipeModel.findOneAndRemove({ _id: deleteRecipeDto.recipeId })
+  }
+
+  async addImageUrl(addImageToRecipeDto:AddImageToRecipeDto) {
+    return await this.recipeModel.findOneAndUpdate(
+      {_id: addImageToRecipeDto.recipeId},
+      {
+        $set: {
+          imageUrl: addImageToRecipeDto.imageUrl,
+        }
+      },
+      {new: true})
   }
 };
 
