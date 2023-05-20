@@ -1,6 +1,8 @@
+import {v4 as uuidv4} from 'uuid';
 import {RecipeService, recipeService} from "./recipe/recipe.service";
-import {CreateRecipeDto, UpdateRecipeDto, DeleteRecipeDto} from './dtos/recipes.dto';
+import {CreateRecipeDto, UpdateRecipeDto, DeleteRecipeDto, AddImageDto} from './dtos/recipes.dto';
 import {BadRequestError, NotAuthorizedError} from '../utils/errors';
+import {s3} from '../utils/AWS-S3/s3';
 
 export class RecipesService {
   constructor(
@@ -45,6 +47,36 @@ export class RecipesService {
     }
 
     return await this.recipeService.delete(deleteRecipeDto);
+  }
+
+  async addImageToRecipe (addImageDto:AddImageDto) {
+    const recipe = await this.recipeService.getOneById(addImageDto.recipeId);
+    if (!recipe) {
+      return new BadRequestError('Recipe not found!');
+    };
+    if (recipe.userId.toString() !== addImageDto.userId && addImageDto.userRole !== 'admin') {
+      return new NotAuthorizedError();
+    };
+    if (!addImageDto.image) {
+      return new BadRequestError('Add image (jpeg/jpg');
+    };
+    try {
+      const fileName = `${uuidv4()}.jpg`;
+
+      // Env is checked when up is starting
+      const params: AWS.S3.PutObjectRequest = {
+        Bucket: process.env.AWS_BUCKET_NAME!,
+        Key: fileName,
+        Body: addImageDto.image.buffer
+      };
+
+      const uploadResult = await s3.upload(params).promise();
+
+      return await this.recipeService.addImageUrl({recipeId: addImageDto.recipeId, imageUrl: uploadResult.Location});
+    } catch (error) {
+      console.log(error);
+      return new BadRequestError('Failed to send image to AWS S3');
+    }
   }
 };
 
