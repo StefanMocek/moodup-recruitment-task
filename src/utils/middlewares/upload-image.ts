@@ -9,7 +9,7 @@ export const upload = multer({
     if (file.mimetype === 'image/jpeg') {
       cb(null, true);
     } else {
-      // req.uploaderError = new Error(`we only accept these types: ${types}`)
+      req.uploaderError = new Error('We only accept these types: jpeg/jpg')
       return cb(null, false)
     }
   },

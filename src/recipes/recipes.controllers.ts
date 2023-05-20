@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from 'express';
-import {CustomError} from '../utils/errors';
+import {CustomError, BadRequestError} from '../utils/errors';
 import {recipesService} from './recipes.service';
 
 class RecipesController {
@@ -33,8 +33,6 @@ class RecipesController {
   public async updateRecipe(req: Request, res: Response, next: NextFunction) {
     const {name, ingredients, preparing, time} = req.body;
     const {id: recipeId} = req.params;
-    // console.log(req.currentUser!.userId);
-    // console.log(typeof (req.currentUser!.userId));
 
     const result = await recipesService.updateRecipe({
       userId: req.currentUser!.userId,
@@ -55,6 +53,7 @@ class RecipesController {
 
   public async deleteRecipe(req: Request, res: Response, next: NextFunction) {
     const {id: recipeId} = req.params;
+    
     const result = await recipesService.deleteRecipe({
       recipeId,
       userRole: req.currentUser!.role,
@@ -68,6 +67,9 @@ class RecipesController {
   };
 
   public async sendImageToS3(req: Request, res: Response, next: NextFunction) {
+    if(req.uploaderError) {
+      return next(new BadRequestError(req.uploaderError.message))
+    };
     const {id: recipeId} = req.params;
     const result = await recipesService.addImageToRecipe({
       userId: req.currentUser!.userId,
