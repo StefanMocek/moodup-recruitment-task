@@ -6,10 +6,6 @@ import express from "express";
 let app: any;
 
 beforeEach = async () => {
-    process.env.JWT_KEY = "sampletestkey";
-    process.env.AWS_ACCESS_KEY_ID = "asd"
-    process.env.AWS_SECRET_ACCESS_KEY = "zxc"
-    process.env.AWS_REGION = "qwe"
     const mongo = await MongoMemoryServer.create();
     let mongoUri = await mongo.getUri();
     app = new AppModule(express(), mongoUri, '../../swagger.yaml');
