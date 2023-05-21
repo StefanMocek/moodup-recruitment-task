@@ -92,9 +92,29 @@ paths:
     get:
       tags:
       - Recipes
-      summary: Get all recipes
+      summary: Get all recipes - pagination
       operationId: Getallrecipes
-      parameters: []
+      parameters:
+      - name: page
+        in: query
+        description: ''
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+          example: 2
+      - name: limit
+        in: query
+        description: ''
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+          example: 2
       responses:
         '200':
           description: ''
@@ -204,6 +224,30 @@ paths:
           description: ''
           headers: {}
       deprecated: false
+  /recipes/search:
+    post:
+      tags:
+      - Recipes
+      summary: Search by name
+      operationId: Searchbyname
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SearchbynameRequest'
+              - example:
+                  name: tort
+            example:
+              name: tort
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
   /recipes/add-image-to-recipe/{id}:
     parameters:
       - in: path
@@ -308,6 +352,16 @@ components:
           type: string
       example:
         cucumber: 50 g
+    SearchbynameRequest:
+      title: Search By Name Request
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+      example:
+        name: tort
     UpdaterecipeRequest:
       title: Update Recipe Request
       required:
