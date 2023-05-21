@@ -239,7 +239,7 @@ paths:
 components:
   schemas:
     RegisterRequest:
-      title: RegisterRequest
+      title: Register Request
       required:
       - email
       - password
@@ -253,7 +253,7 @@ components:
         email: test@gmail.com
         password: haslo123
     LoginRequest:
-      title: LoginRequest
+      title: Login Request
       required:
       - email
       - password
@@ -267,7 +267,7 @@ components:
         email: test@gmail.com
         password: haslo123
     AddrecipeRequest:
-      title: AddrecipeRequest
+      title: Add Recipe Request
       required:
       - name
       - ingredients
@@ -309,7 +309,7 @@ components:
       example:
         cucumber: 50 g
     UpdaterecipeRequest:
-      title: UpdaterecipeRequest
+      title: Update Recipe Request
       required:
       - name
       - ingredients
