@@ -1,7 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import path from 'path';
 import express, {Application, Request, Response} from 'express';
 import cors from 'cors';
 import cookieSession from 'cookie-session';
@@ -15,11 +14,8 @@ import {recipesRouters} from './recipes/recipes.routers';
 
 const PORT = process.env.PORT || 5000;
 
-// read from /dist/src/module.js 
-const swaggerDoc = YAML.load(path.join(__dirname, '../../swagger.yaml'));
-
 export class AppModule {
-  constructor(public app: Application) {
+  constructor(public app: Application, private dbUri: string, private swwagerDocPath: string) {
     app.set('trust proxy', true);
     app.use(cors({
       credentials: true,
@@ -36,9 +32,6 @@ export class AppModule {
   };
 
   async start() {
-    if (!process.env.MONGO_URL) {
-      throw new Error('MONGO_URL is require')
-    };
     if (!process.env.JWT_KEY) {
       throw new Error('JWT_KEY is require')
     };
@@ -47,10 +40,13 @@ export class AppModule {
     };
 
     try {
-      await mongoose.connect(process.env.MONGO_URL)
+      await mongoose.connect(this.dbUri)
     } catch (error) {
       throw new Error('database connection error')
     };
+
+    // read from /dist/src/module.js 
+   const swaggerDoc = YAML.load(this.swwagerDocPath);
     
     this.app.use(currentUser(process.env.JWT_KEY));
     this.app.get('/', (req: Request, res: Response) => {
