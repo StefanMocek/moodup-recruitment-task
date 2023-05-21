@@ -1,6 +1,7 @@
-import {AppModule} from "./module";
+import path from 'path';
 import express from "express";
-import {JwtPayload} from './utils/globals';
+import { AppModule } from "./appModule";
+import { JwtPayload } from './utils/globals';
 
 declare global {
   namespace Express {
@@ -11,10 +12,14 @@ declare global {
   }
 };
 
+const swaggerDocPath = path.join(__dirname, '../../swagger.yaml')
 
-const boostrap = () => {
-  const app = new AppModule(express());
-  app.start();
+const boostrap = async () => {
+  if (!process.env.MONGO_URL) {
+    throw new Error('MONGO_URL is require')
+  };
+  const app = new AppModule(express(), process.env.MONGO_URL, swaggerDocPath);
+  await app.start();
 };
 
 boostrap();
