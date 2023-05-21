@@ -2,7 +2,7 @@ import {Router, NextFunction, Request, Response} from 'express';
 import {requireAuth} from '../utils/middlewares';
 import RecipesController from './recipes.controllers';
 import {validateRequest, upload} from '../utils/middlewares';
-import {recipeValidation, idValidation} from './validatiors';
+import {recipeValidation, idValidation, searchValidation} from './validatiors';
 
 const router = Router();
 
@@ -13,7 +13,11 @@ router
 
 router
   .route('/add-image-to-recipe/:id')
-  .post(idValidation, validateRequest, upload.single('image'), RecipesController.sendImageToS3)
+  .post(idValidation, validateRequest, requireAuth, upload.single('image'), RecipesController.sendImageToS3)
+
+router
+  .route('/search')
+  .post(searchValidation, validateRequest, requireAuth, RecipesController.searchRecipe)
 
 router
   .route('/:id')

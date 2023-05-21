@@ -9,8 +9,8 @@ export class RecipesService {
     public recipeService: RecipeService
   ) { }
 
-  async getAllRecipes() {
-    return await this.recipeService.getAllRecipes();
+  async getAllRecipes(skip: number, limit: number) {
+    return await this.recipeService.getAllRecipes(skip, limit);
   }
 
   async getSingleRecipe(recipeId: string) {
@@ -81,7 +81,7 @@ export class RecipesService {
       return new NotAuthorizedError();
     };
     if (!addImageDto.image) {
-      return new BadRequestError('Add image (jpeg/jpg');
+      return new BadRequestError('Add image (jpeg/jpg)');
     };
     try {
       const fileName = `${uuidv4()}.jpg`;
@@ -100,6 +100,14 @@ export class RecipesService {
       console.log(error);
       return new BadRequestError('Failed to send image to AWS S3');
     }
+  }
+
+  async searchRecipeByName(name: string) {
+    const recipes = await this.recipeService.findByName(name);
+    if (!recipes) {
+      return new BadRequestError(`There is no recipe with name ${name}`);
+    }
+    return recipes
   }
 };
 
