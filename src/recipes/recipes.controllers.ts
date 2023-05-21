@@ -1,10 +1,12 @@
 import {NextFunction, Request, Response} from 'express';
 import {CustomError, BadRequestError} from '../utils/errors';
 import {recipesService} from './recipes.service';
+import {getPagination} from '../utils/get-pagination'
 
 class RecipesController {
   public async getAllRecipes(req: Request, res: Response, next: NextFunction) {
-    const recipes = await recipesService.getAllRecipes();
+    const {skip, limit} = getPagination(req.query);
+    const recipes = await recipesService.getAllRecipes(skip, limit);
     res.status(200).send(recipes)
   }
 
@@ -53,7 +55,7 @@ class RecipesController {
 
   public async deleteRecipe(req: Request, res: Response, next: NextFunction) {
     const {id: recipeId} = req.params;
-    
+
     const result = await recipesService.deleteRecipe({
       recipeId,
       userRole: req.currentUser!.role,
@@ -67,7 +69,7 @@ class RecipesController {
   };
 
   public async sendImageToS3(req: Request, res: Response, next: NextFunction) {
-    if(req.uploaderError) {
+    if (req.uploaderError) {
       return next(new BadRequestError(req.uploaderError.message))
     };
     const {id: recipeId} = req.params;
@@ -81,6 +83,15 @@ class RecipesController {
       return next(result)
     };
     res.status(200).send(result)
+  }
+
+  public async searchRecipe(req: Request, res: Response, next: NextFunction) {
+    const {name} = req.body;
+    const recipe = await recipesService.searchRecipeByName(name);
+    if (recipe instanceof CustomError) {
+      return next(recipe)
+    };
+    res.status(200).send(recipe)
   }
 }
 

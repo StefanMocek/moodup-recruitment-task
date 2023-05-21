@@ -8,8 +8,12 @@ export class RecipeService {
     return await this.recipeModel.findOne({_id: recipeId});
   }
 
-  async getAllRecipes() {
-    return await this.recipeModel.find({});
+  async getAllRecipes(skip: number, limit: number) {
+    return await this.recipeModel
+      .find({})
+      .sort({name: 1})
+      .skip(skip)
+      .limit(limit)
   }
 
   async create(createRecipeDto: CreateRecipeDto) {
@@ -52,6 +56,10 @@ export class RecipeService {
         }
       },
       {new: true})
+  }
+
+  async findByName(searachName: string) {
+    return await this.recipeModel.find({ name: { $regex: searachName, $options: 'i' } });
   }
 };
 
