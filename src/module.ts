@@ -51,11 +51,15 @@ export class AppModule {
     } catch (error) {
       throw new Error('database connection error')
     };
+    
     this.app.use(currentUser(process.env.JWT_KEY));
     this.app.get('/', (req: Request, res: Response) => {
       res.send('<h1>Moodup recruitment task by Stefan MOCEK</h1><a href="/api-docs">Documentation</a>')
     })
+    //  docs route
     this.app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc))
+
+    // main routes
     this.app.use('/api/v1/auth', authRouters);
     this.app.use('/api/v1/recipes', recipesRouters);
     this.app.use(handleNotFound);
