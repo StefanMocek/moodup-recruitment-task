@@ -1,0 +1,345 @@
+openapi: 3.0.0
+info:
+  title: MoodUp team recruitment task
+  description: Documentation page for an application written as a recruitment task for a backend internship.
+  contact: {}
+  version: '1.0'
+servers:
+- url: http://localhost:5000/api/v1
+  variables: {}
+paths:
+  /auth/logout:
+    get:
+      tags:
+      - Auth
+      summary: Logout
+      operationId: Logout
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+  /auth/current-user:
+    get:
+      tags:
+      - Auth
+      summary: Current user
+      operationId: Currentuser
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+  /auth/register:
+    post:
+      tags:
+      - Auth
+      summary: Register
+      operationId: Register
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RegisterRequest'
+              - example:
+                  email: test@gmail.com
+                  password: haslo123
+            example:
+              email: test@gmail.com
+              password: haslo123
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+  /auth/login:
+    post:
+      tags:
+      - Auth
+      summary: Login
+      operationId: Login
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LoginRequest'
+              - example:
+                  email: test@gmail.com
+                  password: haslo123
+            example:
+              email: test@gmail.com
+              password: haslo123
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+  /recipes:
+    get:
+      tags:
+      - Recipes
+      summary: Get all recipes
+      operationId: Getallrecipes
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    post:
+      tags:
+      - Recipes
+      summary: Add recipe
+      operationId: Addrecipe
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AddrecipeRequest'
+              - example:
+                  name: Sample name 5
+                  ingredients:
+                  - cucumber: 50 g
+                  - eggs (divided): '5'
+                  preparing:
+                  - Preheat the oven to 180
+                  - For the dressing, cook an egg in boiling water
+                  time: 5h 20min
+            example:
+              name: Sample name 5
+              ingredients:
+              - cucumber: 50 g
+              - eggs (divided): '5'
+              preparing:
+              - Preheat the oven to 180
+              - For the dressing, cook an egg in boiling water
+              time: 5h 20min
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+  /recipes/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: ID of the recipe
+    get:
+      tags:
+      - Recipes
+      summary: Get single recipe
+      operationId: Getsinglerecipe
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    post:
+      tags:
+      - Recipes
+      summary: Update recipe
+      operationId: Updaterecipe
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdaterecipeRequest'
+              - example:
+                  name: Changed name
+                  ingredients:
+                  - cucumber: 50 g
+                  - eggs (divided): '2'
+                  preparing:
+                  - Preheat the oven to 150
+                  - For the dressing, cook an egg in boiling water
+                  time: 1h 20min
+            example:
+              name: Changed name
+              ingredients:
+              - cucumber: 50 g
+              - eggs (divided): '2'
+              preparing:
+              - Preheat the oven to 150
+              - For the dressing, cook an egg in boiling water
+              time: 1h 20min
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+    delete:
+      tags:
+      - Recipes
+      summary: Delete recipe
+      operationId: Deleterecipe
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+  /recipes/add-image-to-recipe/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: ID of the recipe
+    post:
+      tags:
+      - Recipes
+      summary: Upload image to AWS and update recipe
+      operationId: UploadimagetoAWSandupdaterecipe
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            encoding: {}
+            schema:
+              required:
+              - image
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+        required: false
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+components:
+  schemas:
+    RegisterRequest:
+      title: RegisterRequest
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        email: test@gmail.com
+        password: haslo123
+    LoginRequest:
+      title: LoginRequest
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        email: test@gmail.com
+        password: haslo123
+    AddrecipeRequest:
+      title: AddrecipeRequest
+      required:
+      - name
+      - ingredients
+      - preparing
+      - time
+      type: object
+      properties:
+        name:
+          type: string
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ingredient'
+          description: ''
+        preparing:
+          type: array
+          items:
+            type: string
+          description: ''
+        time:
+          type: string
+      example:
+        name: Sample name 5
+        ingredients:
+        - cucumber: 50 g
+        - eggs (divided): '5'
+        preparing:
+        - Preheat the oven to 180
+        - For the dressing, cook an egg in boiling water
+        time: 5h 20min
+    Ingredient:
+      title: Ingredient
+      type: object
+      properties:
+        cucumber:
+          type: string
+        eggs (divided):
+          type: string
+      example:
+        cucumber: 50 g
+    UpdaterecipeRequest:
+      title: UpdaterecipeRequest
+      required:
+      - name
+      - ingredients
+      - preparing
+      - time
+      type: object
+      properties:
+        name:
+          type: string
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ingredient'
+          description: ''
+        preparing:
+          type: array
+          items:
+            type: string
+          description: ''
+        time:
+          type: string
+      example:
+        name: Changed name
+        ingredients:
+        - cucumber: 50 g
+        - eggs (divided): '2'
+        preparing:
+        - Preheat the oven to 150
+        - For the dressing, cook an egg in boiling water
+        time: 1h 20min
+tags:
+- name: Auth
+- name: Recipes
