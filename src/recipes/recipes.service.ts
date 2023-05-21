@@ -46,10 +46,33 @@ export class RecipesService {
       return new NotAuthorizedError()
     }
 
+    // removing image object in AWS bucket 
+    const imageUrl = recipe.imageUrl;
+    if (imageUrl) {
+      try {
+        const urlParts = imageUrl.split('/');
+        const fileKey = urlParts[urlParts.length - 1];
+        const params = {
+          Bucket: process.env.AWS_BUCKET_NAME!,
+          Key: fileKey,
+        };
+
+        s3.deleteObject(params, async (err, data) => {
+          if (err) {
+            console.error(err);
+            return new BadRequestError('Failed to delete the image in AWS S3')
+          }
+          return await this.recipeService.delete(deleteRecipeDto);
+        });
+      } catch (error) {
+        console.log(error);
+        return new BadRequestError('Failed to delete the image in AWS S3');
+      }
+    }
     return await this.recipeService.delete(deleteRecipeDto);
   }
 
-  async addImageToRecipe (addImageDto:AddImageDto) {
+  async addImageToRecipe(addImageDto: AddImageDto) {
     const recipe = await this.recipeService.getOneById(addImageDto.recipeId);
     if (!recipe) {
       return new BadRequestError('Recipe not found!');

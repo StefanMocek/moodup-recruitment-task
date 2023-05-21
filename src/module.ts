@@ -47,8 +47,8 @@ export class AppModule {
     };
 
     this.app.use(currentUser(process.env.JWT_KEY));
-    this.app.use(authRouters);
-    this.app.use(recipesRouters);
+    this.app.use('/api/v1/auth', authRouters);
+    this.app.use('/api/v1/recipes', recipesRouters);
     this.app.use(handleNotFound);
     this.app.use(errorHandler);
 
