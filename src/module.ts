@@ -1,16 +1,22 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import express, {Application, NextFunction, Request, Response} from 'express';
+import path from 'path';
+import express, {Application, Request, Response} from 'express';
 import cors from 'cors';
 import cookieSession from 'cookie-session';
 import mongoose from 'mongoose';
+import YAML from 'yamljs';
+import swaggerUI from 'swagger-ui-express'
 
 import {errorHandler, currentUser, handleNotFound} from './utils/middlewares';
 import {authRouters} from './auth/auth.routers';
 import {recipesRouters} from './recipes/recipes.routers';
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 5000;
+
+// read from /dist/src/module.js 
+const swaggerDoc = YAML.load(path.join(__dirname, '../../swagger.yaml'));
 
 export class AppModule {
   constructor(public app: Application) {
@@ -45,8 +51,11 @@ export class AppModule {
     } catch (error) {
       throw new Error('database connection error')
     };
-
     this.app.use(currentUser(process.env.JWT_KEY));
+    this.app.get('/', (req: Request, res: Response) => {
+      res.send('<h1>Moodup recruitment task by Stefan MOCEK</h1><a href="/api-docs">Documentation</a>')
+    })
+    this.app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc))
     this.app.use('/api/v1/auth', authRouters);
     this.app.use('/api/v1/recipes', recipesRouters);
     this.app.use(handleNotFound);
