@@ -19,6 +19,7 @@ export class AppModule {
     app.set('trust proxy', true);
     app.use(cors({
       credentials: true,
+      origin: process.env.CLIENT_ORIGIN || '*',
       optionsSuccessStatus: 200
     }))
     app.use(express.urlencoded({extended: false}));
