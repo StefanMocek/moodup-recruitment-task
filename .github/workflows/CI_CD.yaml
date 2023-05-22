@@ -30,4 +30,8 @@ jobs:
         env: 
           HD_MONGO_URL: ${{secrets.MONGO_URL}}
           HD_JWT_KEY: ${{secrets.JWT_KEY}}
+          HD_AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          HD_AWS_BUCKET_NAME: ${{secrets.AWS_BUCKET_NAME}}
+          HD_AWS_REGION: ${{secrets.AWS_REGION}}
+          HD_AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
           
