@@ -5,7 +5,7 @@ info:
   contact: {}
   version: '1.0'
 servers:
-- url: https://moodup-recruitment-task.herokuapp.com/
+- url: https://moodup-recruitment-task.herokuapp.com/api/v1
   variables: {}
 paths:
   /auth/logout:
